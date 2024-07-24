@@ -19,6 +19,7 @@ header("Cache-control: private");
 
     require('phpCommon/BlockXSS.class.php');
     require('phpCommon/MySqlPdoHandler.class.php');
+    require('phpCommon/addStripSlashes.php');
 
     // require('phpCommon/SecureV2.class.php');
     require('usuarios.class.php');
