@@ -1,6 +1,6 @@
 <?php
-//error_reporting(0);
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(0);
+//error_reporting(E_ALL ^ E_NOTICE);
 ini_set('display_errors', 1);
 
 if (isset($_GET['sess']) ){

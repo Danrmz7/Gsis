@@ -16,7 +16,7 @@ class Usuarios {
     var $alert;
   
     /*---------------------------------*/
-    public function Usuarios($sql/*, $getCurrentUser*/){
+    public function __construct($sql/*, $getCurrentUser*/){
       
       $this->sql        = $sql;
       //$this->_user      = $getCurrentUser;
@@ -50,7 +50,7 @@ class Usuarios {
 
     public function select_users()
     {
-        $query = "SELECT * from usuarios WHERE EDAD = ?";
+        $query = "SELECT * from usuarios";
         $params_query = array();
 
         if($rs = $this->sql->select($query, $params_query))
