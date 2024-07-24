@@ -1,6 +1,6 @@
 <?php
-error_reporting(0);
-//error_reporting(E_ALL ^ E_NOTICE);
+//error_reporting(0);
+error_reporting(E_ALL ^ E_NOTICE);
 ini_set('display_errors', 1);
 
 if (isset($_GET['sess']) ){
@@ -19,7 +19,6 @@ header("Cache-control: private");
 
     require('phpCommon/BlockXSS.class.php');
     require('phpCommon/MySqlPdoHandler.class.php');
-    // require('phpCommon/FormCreator.class.php');
 
     // require('phpCommon/SecureV2.class.php');
     require('usuarios.class.php');
@@ -27,7 +26,6 @@ header("Cache-control: private");
     $MySqlHandler =  MySqlPdoHandler::getInstance(); 
     $MySqlHandler->connect($database_name);
     $MySqlHandler->Query("SET NAMES utf8");
-    // $Forms = new Forms($MySqlHandler);
 
     // $secure     = new Secure($MySqlHandler, $database_name, $table_users, $unField, $psField, $idField, 'remember_me' , '', 'pos_secure', 'login.php', true);
     $Usuarios      = new Usuarios($MySqlHandler/*, $secure->getCurrentUser()*/);

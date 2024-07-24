@@ -47,9 +47,53 @@ class Usuarios {
             break;
         }
     }
+
+    public function select_users()
+    {
+        $query = "SELECT * from usuarios WHERE EDAD = ?";
+        $params_query = array();
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function show_all_rows()
     {
-        $output .= '<h1> gEI EL QUE Lo lea </h1>';
+        $output .= '
+        <div class="container">
+            <div class="table-responsive">
+                <table class = "table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Contraseña</th>
+                            <th>Edad</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach ($this->select_users() as $user)
+                    {
+                        $output .= '
+                        <tr> 
+                            <td>'.$user['NOMBRE'].'</td>
+                            <td>'.$user['CORREO'].'</td>
+                            <td>'.$user['CONTRASENA'].'</td>
+                            <td>'.$user['EDAD'].'</td>
+                        </tr>';
+                    }
+                    $output .= '
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        ';
         return $output;
     }
     
