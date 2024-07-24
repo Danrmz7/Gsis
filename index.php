@@ -1,5 +1,6 @@
 <?php
 include ('_assets/classes/header.inc.php');
+$Usuarios->setData();
 $process = $Usuarios->process();
 
 ?>
