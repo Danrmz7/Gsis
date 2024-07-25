@@ -65,7 +65,23 @@ class Usuarios {
 
     public function show_all_rows()
     {
-        $output .= '
+        if ($this->action == "save_user_form")
+        {
+            $output .= '
+                <div class="card">
+                    
+                    <div class = "card-body">           
+                    Comentario
+                    </div>
+
+                </div>
+
+            ';
+
+
+        }else{
+            $output .= '
+            <a href = "./?action=save_user_form">Agregar Nuevo Usuario</a>
         <div class="container">
             <div class="table-responsive">
                 <table class = "table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -94,6 +110,7 @@ class Usuarios {
             </div>
         </div>
         ';
+        }
         return $output;
     }
     
