@@ -49,6 +49,16 @@ class Usuarios {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
+           /* case 'update_user_form':
+                if($this->update_users())
+                {
+                    $alert = '
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> Usuario Agregado
+                    </div> ';
+                   
+                }*/
+
                 else
                 {
                     $alert = '
@@ -109,12 +119,92 @@ class Usuarios {
         }
     }
 
+    public function update_users()
+    {
+        
+        $query = "UPDATE usuarios SET = 20 Where ID = 1";
+        $params_query = array();
+
+        if($this->sql->insert($query, $params_query))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    
+
     /***
      * FIN de Funciones SQL
      */
 
     public function show_all_rows($alert='')
     {
+        if ($this->action == "update_user_form")
+        {
+        $output .= '
+        <div class="card-body">
+        comentario
+        <div class="container">  
+            <div class="row">
+                <div class="col">
+                    <div class="box-body">
+                    <form action="./?action=update_user_form" method="PUT">
+                        <!-- Entrada para el nombre -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
+                            </div>
+                        </div>
+
+                        <!-- Entrada para el usuario -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
+                            </div>
+                        </div>
+
+                        <!-- Entrada para el edad -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-lg" name="putEdad" placeholder="Actualizar Edad" required>
+                            </div>
+                        </div>
+
+                        <!-- Entrada para la contraseña -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="password" class="form-control input-lg" name="putPassword" placeholder="Actualizar contraseña" required>
+                            </div>
+                        </div>
+
+                        <!-- Entrada para seleccionar perfil 
+                        <div class="form-group">
+                            <div class="input-group">
+                                <select class="form-control input-lg" name="nuevoPerfil">
+                                    <option value="">Seleccionar perfil</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <option value="Especial">Especial</option>
+                                    <option value="Vendedor">Vendedor</option>
+                                </select>
+                            </div>
+                        </div> -->
+                        <!-- Botón de enviar -->
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <button type="submit" class="btn btn-primary">Enviar</button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+        }
+
         if ($this->action == "save_user_form")
         {
             $output .= '
@@ -204,7 +294,7 @@ class Usuarios {
                                 <td>'.$user['CORREO'].'</td>
                                 <td>'.$user['CONTRASENA'].'</td>
                                 <td>'.$user['EDAD'].'</td>
-                                <td><a href = "./?action=update_user_form&&id_user='.$user['ID'].'" class="btn btn-info">Editar Usuario</a></td>
+                                <td><a href = "./?action=update_user_form && id_user='.$user['ID'].'" class="btn btn-info">Editar Usuario</a></td>
                             </tr>';
                         }
                         $output .= '
