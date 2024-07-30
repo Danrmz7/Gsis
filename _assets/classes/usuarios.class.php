@@ -49,21 +49,33 @@ class Usuarios {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
-           /* case 'update_user_form':
+            case 'update_user':
                 if($this->update_users())
                 {
                     $alert = '
                     <div class="alert alert-success">
-                        <strong>Success!</strong> Usuario Agregado
+                        <strong>Success!</strong> Usuario Actualizado
                     </div> ';
-                   
-                }*/
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+                }
+            case 'delete_user':
+                if($this->delete_users())
+                {
+                    $alert = '
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> Usuario Eliminado
+                    </div> ';
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+                        
+                 }
 
                 else
                 {
                     $alert = '
                    <div class="alert alert-danger">
-                    <strong>Danger!</strong> Error al agregar usuario
+                    <strong>Danger!</strong> Error al eliminar usuario
                     </div> ';
                     //
                     $output .= $this->show_all_rows();
@@ -119,13 +131,52 @@ class Usuarios {
         }
     }
 
+    public function Get_users_info()
+    {
+        $query = "SELECT * from usuarios Where ID = ?" ;
+        $params_query = array($this->getData['id_user']);
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function update_users()
     {
         
-        $query = "UPDATE usuarios SET = 20 Where ID = 1";
-        $params_query = array();
+        $query = "UPDATE usuarios SET NOMBRE = ?, CORREO = ?, CONTRASENA = ?, EDAD = ? Where ID = ?";
+        $params_query = array(
+            $this->postData['putNombre'],
+            $this->postData['putUsuario'],
+            $this->postData['putPassword'],
+            $this->postData['putEdad'],
+            $this->postData['id_user']
+        );
+        
 
-        if($this->sql->insert($query, $params_query))
+        if($this->sql->update($query, $params_query))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function delete_users()
+    {
+        
+        $query = "DELETE FROM usuarios Where ID = ?";
+        $params_query = array($this->postData['id_user']);
+        
+
+        if($this->sql->delete($query, $params_query))
         {
             return true;
         }
@@ -143,130 +194,151 @@ class Usuarios {
 
     public function show_all_rows($alert='')
     {
-        if ($this->action == "update_user_form")
-        {
-        $output .= '
-        <div class="card-body">
-        comentario
-        <div class="container">  
-            <div class="row">
-                <div class="col">
-                    <div class="box-body">
-                    <form action="./?action=update_user_form" method="PUT">
-                        <!-- Entrada para el nombre -->
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
-                            </div>
+        if ($this->action == "delete_user_form"){
+             $output .= '
+            <form action="./?action=delete_user" method="POST">
+                <h1>¿Estás Seguro Que Desea Eliminar a este usuario?</h1>
+                    <input value="'.$this->getData['id_user'].'" type="hidden" name="id_user" >
+                    <div class="form-group">
+                        <div class="input-group">
+                            <button type="submit" class="btn btn-warning">Simon</button>
+                            <a href="javascript:history.back()" class="btn btn-primary">No, Volver</a>
                         </div>
-
-                        <!-- Entrada para el usuario -->
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
-                            </div>
-                        </div>
-
-                        <!-- Entrada para el edad -->
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control input-lg" name="putEdad" placeholder="Actualizar Edad" required>
-                            </div>
-                        </div>
-
-                        <!-- Entrada para la contraseña -->
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="password" class="form-control input-lg" name="putPassword" placeholder="Actualizar contraseña" required>
-                            </div>
-                        </div>
-
-                        <!-- Entrada para seleccionar perfil 
-                        <div class="form-group">
-                            <div class="input-group">
-                                <select class="form-control input-lg" name="nuevoPerfil">
-                                    <option value="">Seleccionar perfil</option>
-                                    <option value="Administrador">Administrador</option>
-                                    <option value="Especial">Especial</option>
-                                    <option value="Vendedor">Vendedor</option>
-                                </select>
-                            </div>
-                        </div> -->
-                        <!-- Botón de enviar -->
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <button type="submit" class="btn btn-primary">Enviar</button>
-                                </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>';
+                    </div>   
+            </form>';
         }
+        else if ($this->action == "update_user_form"){
 
-        if ($this->action == "save_user_form")
-        {
-            $output .= '
+        $output .= '
             <div class="card-body">
-            comentario
+            update
             <div class="container">  
                 <div class="row">
                     <div class="col">
-                        <div class="box-body">
-                        <form action="./?action=save_user" method="POST">
-                            <!-- Entrada para el nombre -->
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input type="text" class="form-control input-lg" name="nuevoNombre" placeholder="Ingresar nombre" required>
-                                </div>
-                            </div>
-
-                            <!-- Entrada para el usuario -->
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input type="text" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar usuario" required>
-                                </div>
-                            </div>
-
-                            <!-- Entrada para el edad -->
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input type="text" class="form-control input-lg" name="nuevoEdad" placeholder="Ingresar Edad" required>
-                                </div>
-                            </div>
-
-                            <!-- Entrada para la contraseña -->
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input type="password" class="form-control input-lg" name="nuevoPassword" placeholder="Ingresar contraseña" required>
-                                </div>
-                            </div>
-
-                            <!-- Entrada para seleccionar perfil 
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <select class="form-control input-lg" name="nuevoPerfil">
-                                        <option value="">Seleccionar perfil</option>
-                                        <option value="Administrador">Administrador</option>
-                                        <option value="Especial">Especial</option>
-                                        <option value="Vendedor">Vendedor</option>
-                                    </select>
-                                </div>
-                            </div> -->
-                            <!-- Botón de enviar -->
+                        <div class="box-body">';
+                            foreach ($this->Get_users_info() as $user){
+                            $output .= '
+                                    <form action="./?action=update_user" method="POST">
+                                    <input value="'.$user['ID'].'" type="hidden" name="id_user" >
+                                <!-- Entrada para el nombre -->
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <button type="submit" class="btn btn-primary">Enviar</button>
+                                    Nombre:<br><br>
+                                        <input value="'.$user['NOMBRE'].'" type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
                                     </div>
-                            </form>
+                                </div>
+
+                                <!-- Entrada para el correo -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                    Correo:<br><br>
+                                        <input value="'.$user['CORREO'].'" type="text" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
+                                    </div>
+                                </div>
+
+                                <!-- Entrada para la contraseña -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                    Contraseña:<br><br>
+                                    <input value="'.$user['CONTRASENA'].'" type="text" class="form-control input-lg" name="putPassword" placeholder="Actualizar contraseña" required>
+                                    </div>
+                                </div>
+
+                                <!-- Entrada para el edad -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                    Edad:<br><br>
+                                    <input value="'.$user['EDAD'].'" type="text" class="form-control input-lg" name="putEdad" placeholder="Actualizar Edad" required>
+                                    </div>
+                                </div>
+
+                                <!-- Entrada para seleccionar perfil 
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <select class="form-control input-lg" name="nuevoPerfil">
+                                            <option value="">Seleccionar perfil</option>
+                                            <option value="Administrador">Administrador</option>
+                                            <option value="Especial">Especial</option>
+                                            <option value="Vendedor">Vendedor</option>
+                                        </select>
+                                    </div>
+                                </div> -->
+                                <!-- Botón de enviar -->
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                        <button type="submit" class="btn btn-primary">Enviar</button>
+                                        </div>
+                                        </form>';      
+                            }
+                            
+                                $output .='
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>';
+            </div>';
+            }
 
+            else if ($this->action == "save_user_form")
+            {
+                $output .= '
+                <div class="card-body">
+                comentario
+                <div class="container">  
+                    <div class="row">
+                        <div class="col">
+                            <div class="box-body">
+                            <form action="./?action=save_user" method="POST">
+                                <!-- Entrada para el nombre -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-lg" name="nuevoNombre" placeholder="Ingresar nombre" required>
+                                    </div>
+                                </div>
 
+                                <!-- Entrada para el usuario -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar usuario" required>
+                                    </div>
+                                </div>
+
+                                <!-- Entrada para el edad -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-lg" name="nuevoEdad" placeholder="Ingresar Edad" required>
+                                    </div>
+                                </div>
+
+                                <!-- Entrada para la contraseña -->
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control input-lg" name="nuevoPassword" placeholder="Ingresar contraseña" required>
+                                    </div>
+                                </div>
+
+                                <!-- Entrada para seleccionar perfil 
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <select class="form-control input-lg" name="nuevoPerfil">
+                                            <option value="">Seleccionar perfil</option>
+                                            <option value="Administrador">Administrador</option>
+                                            <option value="Especial">Especial</option>
+                                            <option value="Vendedor">Vendedor</option>
+                                        </select>
+                                    </div>
+                                </div> -->
+                                <!-- Botón de enviar -->
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <button type="submit" class="btn btn-primary">Enviar</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>';
         }
         else
         {
@@ -294,7 +366,10 @@ class Usuarios {
                                 <td>'.$user['CORREO'].'</td>
                                 <td>'.$user['CONTRASENA'].'</td>
                                 <td>'.$user['EDAD'].'</td>
-                                <td><a href = "./?action=update_user_form && id_user='.$user['ID'].'" class="btn btn-info">Editar Usuario</a></td>
+                                <td>
+                                    <a href = "./?action=update_user_form&&id_user='.$user['ID'].'" class="btn btn-info btn-sm">Editar Usuario</a>
+                                    <a href = "./?action=delete_user_form&&id_user='.$user['ID'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a>
+                                </td>
                             </tr>';
                         }
                         $output .= '
