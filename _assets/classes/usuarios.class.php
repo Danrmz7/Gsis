@@ -112,7 +112,7 @@ class Usuarios {
 
     public function insert_users()
     {
-        $query = "INSERT INTO usuarios (NOMBRE,CORREO,CONTRASENA,EDAD,active) VALUES (?,?,?,?,1)";
+        $query = "INSERT INTO usuarios (nombre_usuario,correo_usuario,contrasena_usuario,edad_usuario,active) VALUES (?,?,?,?,1)";
         $params_query = array(
             $this->postData['nuevoNombre'],
             $this->postData['nuevoUsuario'],
@@ -133,7 +133,7 @@ class Usuarios {
 
     public function Get_users_info()
     {
-        $query = "SELECT * from usuarios Where ID = ?" ;
+        $query = "SELECT * from usuarios Where id_usuario = ?" ;
         $params_query = array($this->getData['id_user']);
 
         if($rs = $this->sql->select($query, $params_query))
@@ -149,7 +149,7 @@ class Usuarios {
     public function update_users()
     {
         
-        $query = "UPDATE usuarios SET NOMBRE = ?, CORREO = ?, CONTRASENA = ?, EDAD = ? Where ID = ?";
+        $query = "UPDATE usuarios SET nombre_usuario = ?, correo_usuario = ?, contrasena_usuario = ?, edad_usuario = ? Where id_usuario = ?";
         $params_query = array(
             $this->postData['putNombre'],
             $this->postData['putUsuario'],
@@ -172,7 +172,7 @@ class Usuarios {
     public function delete_users()
     {
         
-        $query = "DELETE FROM usuarios Where ID = ?";
+        $query = "DELETE FROM usuarios Where id_usuario = ?";
         $params_query = array($this->postData['id_user']);
         
 
@@ -219,12 +219,12 @@ class Usuarios {
                             foreach ($this->Get_users_info() as $user){
                             $output .= '
                                     <form action="./?action=update_user" method="POST">
-                                    <input value="'.$user['ID'].'" type="hidden" name="id_user" >
+                                    <input value="'.$user['id_usuario'].'" type="hidden" name="id_user" >
                                 <!-- Entrada para el nombre -->
                                 <div class="form-group">
                                     <div class="input-group">
                                     Nombre:<br><br>
-                                        <input value="'.$user['NOMBRE'].'" type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
+                                        <input value="'.$user['nombre_usuario'].'" type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
                                     </div>
                                 </div>
 
@@ -232,7 +232,7 @@ class Usuarios {
                                 <div class="form-group">
                                     <div class="input-group">
                                     Correo:<br><br>
-                                        <input value="'.$user['CORREO'].'" type="text" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
+                                        <input value="'.$user['correo_usuario'].'" type="text" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
                                     </div>
                                 </div>
 
@@ -240,7 +240,7 @@ class Usuarios {
                                 <div class="form-group">
                                     <div class="input-group">
                                     Contraseña:<br><br>
-                                    <input value="'.$user['CONTRASENA'].'" type="text" class="form-control input-lg" name="putPassword" placeholder="Actualizar contraseña" required>
+                                    <input value="'.$user['contrasena_usuario'].'" type="text" class="form-control input-lg" name="putPassword" placeholder="Actualizar contraseña" required>
                                     </div>
                                 </div>
 
@@ -248,7 +248,7 @@ class Usuarios {
                                 <div class="form-group">
                                     <div class="input-group">
                                     Edad:<br><br>
-                                    <input value="'.$user['EDAD'].'" type="text" class="form-control input-lg" name="putEdad" placeholder="Actualizar Edad" required>
+                                    <input value="'.$user['edad_usuario'].'" type="text" class="form-control input-lg" name="putEdad" placeholder="Actualizar Edad" required>
                                     </div>
                                 </div>
 
@@ -362,13 +362,13 @@ class Usuarios {
                         {
                             $output .= '
                             <tr> 
-                                <td>'.$user['NOMBRE'].'</td>
-                                <td>'.$user['CORREO'].'</td>
-                                <td>'.$user['CONTRASENA'].'</td>
-                                <td>'.$user['EDAD'].'</td>
+                                <td>'.$user['nombre_usuario'].'</td>
+                                <td>'.$user['correo_usuario'].'</td>
+                                <td>'.$user['contrasena_usuario'].'</td>
+                                <td>'.$user['edad_usuario'].'</td>
                                 <td>
-                                    <a href = "./?action=update_user_form&&id_user='.$user['ID'].'" class="btn btn-info btn-sm">Editar Usuario</a>
-                                    <a href = "./?action=delete_user_form&&id_user='.$user['ID'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a>
+                                    <a href = "./?action=update_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-info btn-sm">Editar Usuario</a>
+                                    <a href = "./?action=delete_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a>
                                 </td>
                             </tr>';
                         }
