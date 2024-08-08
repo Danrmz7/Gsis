@@ -38,20 +38,53 @@ class Products {
     public function process()
     {
         switch($this->action){
-            case 'product_product':
-                if($this->insert_users())
+            case 'save_product':
+                if($this->insert_products())
                 {
                     $alert = '
                     <div class="alert alert-success">
-                        <strong>Success!</strong> Usuario Agregado
+                        <strong>Success!</strong> Producto Agregado
                     </div> ';
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
-                break;
+            break;
+
+            case 'update_product':
+                if($this->update_products())
+                {
+                    $alert = '
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> Usuario Actualizado
+                    </div> ';
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+                }
+                else{
+                $alert = '
+                <div class="alert alert-warning">
+                    <strong>warning jg!</strong> Producto no agregado
+                </div> ';
+                $output.= $this->show_all_rows($alert);
+                return $output;
+                }
+            break;
+
+            case 'delete_product':
+                if($this->delete_products())
+                {
+                    $alert = '
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> Usuario Eliminado
+                    </div> ';
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+
+                }
+            break;
             
             default:
-                $output .= $this->show_all_rows();
+                $output.= $this->show_all_rows();
                 return $output;
             break;
         }
@@ -76,6 +109,37 @@ class Products {
         }
     }
 
+    public function get_product_category($id_cat)
+    {
+        $query = "SELECT * from categorias where id_categoria = ?";
+        $params_query = array($id_cat);
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs[0];
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function get_product_user($id_us)
+    {
+        $query = "SELECT * from usuarios where id_usuario = ?";
+        $params_query = array($id_us);
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs[0];
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     public function get_users()
     {
         $query = "SELECT * from usuarios";
@@ -91,14 +155,46 @@ class Products {
         }
     }
 
-    public function insert_users()
+    public function get_categories()
     {
-        $query = "INSERT INTO usuarios (nombre_producto,correo_usuario,contrasena_usuario,edad_usuario,active) VALUES (?,?,?,?,1)";
+        $query = "SELECT * from categorias";
+        $params_query = array();
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function get_products_info()
+    {
+        $query = "SELECT * from productos Where id_producto = ?";
+        $params_query = array($this->getData['id_product']);
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function insert_products()
+    {
+        $query = "INSERT INTO productos (nombre_producto,id_categoria,descripcion_producto,precio_producto,id_usuario) VALUES (?,?,?,?,?)";
         $params_query = array(
-            $this->postData['nuevoNombre'],
-            $this->postData['nuevoUsuario'],
-            $this->postData['nuevoPassword'],
-            $this->postData['nuevoEdad']
+            $this->postData['nuevoProducto'],
+            $this->postData['nuevoCategoria'],
+            $this->postData['nuevoDescripcion'],
+            $this->postData['nuevoPrecio'],
+            $this->postData['nuevoPerfil']
+            
 
         );
 
@@ -112,36 +208,195 @@ class Products {
         }
     }
 
+    public function update_products()
+    {
+        
+        $query = "UPDATE productos SET nombre_producto = ?, id_categoria = ?, descripcion_producto = ?, precio_producto = ? Where id_producto = ?";
+        $params_query = array(
+            $this->postData['putNombre'],
+            $this->postData['nuevoCategoria'],
+            $this->postData['putdescripcion'],
+            $this->postData['putprecio'],
+            $this->postData['id_product']
+        );
+        
+
+        if($this->sql->update($query, $params_query))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function delete_products()
+    {
+        
+        $query = "DELETE FROM productos Where id_producto = ?";
+        $params_query = array($this->postData['id_product']);
+        
+
+        if($this->sql->delete($query, $params_query))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
     /***
      * FIN de Funciones SQL
      */
 
     public function show_all_rows($alert='')
-    {
+    {   
+        if ($this->action == "delete_product_form"){
+            $output .= '
+           <form action="products.php?action=delete_product" method="POST">
+               <h1>¿Estás Seguro Que Desea Eliminar a este usuario?</h1>
+                   <input value="'.$this->getData['id_product'].'" type="hidden" name="id_product" >
+                   <div class="form-group">
+                       <div class="input-group">
+                           <button type="submit" class="btn btn-warning">Simon</button>
+                           <a href="javascript:history.back()" class="btn btn-primary">No, Volver</a>
+                       </div>
+                   </div>   
+           </form>';
+       }
+        else if ($this->action == "update_product_form"){
 
-        if ($this->action == "save_product_form")
+            $output .= '
+                <div class="card-body">
+                update
+                <div class="container">  
+                    <div class="row">
+                        <div class="col">
+                            <div class="box-body">';
+                                foreach ($this->Get_products_info() as $product){
+                                $output .= '
+                                        <form action="products.php?action=update_product" method="POST">
+                                        <input value="'.$product['id_producto'].'" type="hidden" name="id_product" >
+
+                                    <!-- Entrada para el nombre del producto -->
+                                    <div class="form-group">
+                                        Nombre:
+                                        <div class="input-group">
+                                            <input value="'.$product['nombre_producto'].'" type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
+                                        </div>
+                                    </div>
+    
+                                    <!-- Entrada para la categoria -->
+                                    <div class="form-group">
+                                    Categoria:
+                                    <div class="input-group">
+                                        <select class="form-control input-lg" name="nuevoCategoria">
+                                            <option value="">Seleccionar categoria</option>';
+                                            foreach ($this->get_categories() as $categories)
+                                            {
+                                                if ($categories['id_categoria'] == $product['id_categoria'])
+                                                {
+                                                    $output .= '<option value="'.$categories['id_categoria'].'" selected>'.$categories['nombre_categoria'].'</option>';
+                                                }
+                                                else
+                                                {
+                                                    # code...
+                                                    $output .= '<option value="'.$categories['id_categoria'].'">'.$categories['nombre_categoria'].'</option>';
+                                                }
+                                                
+                                            }
+                                        $output .= '
+                                        </select>
+                                    </div>
+                                </div>
+    
+                                    <!-- Entrada para la descripcion -->
+                                    <div class="form-group">
+                                        Descripción:
+                                        <div class="input-group">
+                                        <input value="'.$product['descripcion_producto'].'" type="text" class="form-control input-lg" name="putdescripcion" placeholder="Actualizar contraseña" required>
+                                        </div>
+                                    </div>
+    
+                                    <!-- Entrada para el precio -->
+                                    <div class="form-group">
+                                        Precio:
+                                        <div class="input-group">
+                                            <input value="'.$product['precio_producto'].'" type="text" class="form-control input-lg" name="putprecio" placeholder="Actualizar Edad" required>
+                                        </div>
+                                    </div>
+                                    
+
+                                    <!-- Entrada para seleccionar perfil 
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <select class="form-control input-lg" name="nuevoPerfil">
+                                                <option value="">Seleccionar perfil</option>
+                                                <option value="Administrador">Administrador</option>
+                                                <option value="Especial">Especial</option>
+                                                <option value="Vendedor">Vendedor</option>
+                                            </select>
+                                        </div>
+                                    </div> -->
+                                    <!-- Botón de enviar -->
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                            <button type="submit" class="btn btn-primary">Enviar</button>
+                                            </div>
+                                            </form>';      
+                                }
+                                
+                                    $output .='
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+                }
+    
+
+        else if ($this->action == "save_product_form")
             {
-                $output .= '
+                $output.= '
                 <div class="card-body">
                 comentario
                 <div class="container">  
                     <div class="row">
                         <div class="col">
                             <div class="box-body">
-                            <form action="./?action=save_user" method="POST">
+                            <form action="products.php?action=save_product" method="POST">
                                 <!-- Entrada para el nombre del producto -->
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control input-lg" name="nuevoNombre" placeholder="Ingresar nombre del producto" required>
+                                        <input type="text" class="form-control input-lg" name="nuevoProducto" placeholder="Ingresar nombre del producto" required>
                                     </div>
                                 </div>
 
                                 <!-- Entrada para la categoria -->
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control input-lg" name="nuevoCategoria" placeholder="Ingresar categoria" required>
+                                        <select class="form-control input-lg" name="nuevoCategoria">
+                                            <option value="">Seleccionar categoria</option>';
+                                            foreach ($this->get_categories() as $categories)
+                                            {
+                                                $output .= '<option value="'.$categories['id_categoria'].'">'.$categories['nombre_categoria'].'</option>';
+                                            }
+                                        $output .= '
+                                        </select>
                                     </div>
                                 </div>
+
+                                <!-- Entrada para la categoria
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-lg" name="nuevoCategoria" placeholder="Ingresar categoria" required>
+                                    </div>
+                                </div> -->
 
                                 <!-- Entrada para la descripcion -->
                                 <div class="form-group">
@@ -174,7 +429,7 @@ class Products {
                                  <!-- Entrada para la foto -->
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control input-lg" name="foto" placeholder="foto" required>
+                                        <input type="text" class="form-control input-lg" name="nuevofoto" placeholder="foto" required>
                                     </div>
                                 </div>
 
@@ -195,7 +450,7 @@ class Products {
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary">Enviar</button>
                                         </div>
-                                </form>
+                        </form>
                             </div>
                         </div>
                     </div>
@@ -218,25 +473,28 @@ class Products {
                                     <th>Usuario</th>
                                     <th>Foto</th>
                                     <th>Fecha de publicacion</th>
+                                    <th>kk</th>
                                 </tr>
                             </thead>
                             <tbody>';
                             foreach ($this->select_products() as $product)
                             {
+                                $categoria  = $this->get_product_category($product['id_categoria']);
+                                $usuario = $this->get_product_user($product['id_usuario']);
                                 $output .= '
                                 <tr> 
                                     <td>'.$product['nombre_producto'].'</td>
-                                    <td>'.$product['id_categoria'].'</td>
+                                    <td>'.$categoria['nombre_categoria'].'</td>
                                     <td>'.$product['descripcion_producto'].'</td>
                                     <td>'.$product['precio_producto'].'</td>
-                                    <td>'.$product['id_usuario'].'</td>
+                                    <td>'.$usuario['nombre_usuario'].'</td>
                                     <td>'.$product['id_foto'].'</td>
                                     <td>'.$product['fecha_pub_producto'].'</td>
                                     <td>
-                                       <!-- <a href = "./?action=update_user_form&&id_user='.$user['id_producto'].'" class="btn btn-info btn-sm">Editar Usuario</a> 
-                                       <a href = "./?action=delete_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a> -->
+                                        <a href = "products.php?action=update_product_form&&id_product='.$product['id_producto'].'" class="btn btn-info btn-sm">Editar Usuario</a> 
+                                       <a href = "products.php?action=delete_product_form&&id_product='.$product['id_producto'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a> 
                                     </td>
-                                </tr>';
+                                </tr>'; 
                             }
                             $output .= '
                             </tbody>

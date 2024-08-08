@@ -49,6 +49,7 @@ class Usuarios {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
+                break;
             case 'update_user':
                 if($this->update_users())
                 {
@@ -59,6 +60,7 @@ class Usuarios {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
+                break;
             case 'delete_user':
                 if($this->delete_users())
                 {
@@ -69,9 +71,7 @@ class Usuarios {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                         
-                 }
-
-                else
+                 }else
                 {
                     $alert = '
                    <div class="alert alert-danger">
@@ -208,8 +208,7 @@ class Usuarios {
             </form>';
         }
         else if ($this->action == "update_user_form"){
-
-        $output .= '
+            $output .= '
             <div class="card-body">
             update
             <div class="container">  
@@ -218,12 +217,12 @@ class Usuarios {
                         <div class="box-body">';
                             foreach ($this->Get_users_info() as $user){
                             $output .= '
-                                    <form action="./?action=update_user" method="POST">
-                                    <input value="'.$user['id_usuario'].'" type="hidden" name="id_user" >
+                                <form action="./?action=update_user" method="POST">
+                                <input value="'.$user['id_usuario'].'" type="hidden" name="id_user" >
                                 <!-- Entrada para el nombre -->
                                 <div class="form-group">
                                     <div class="input-group">
-                                    Nombre:<br><br>
+                                        Nombre:<br><br>
                                         <input value="'.$user['nombre_usuario'].'" type="text" class="form-control input-lg" name="putNombre" placeholder="Actualizar nombre" required>
                                     </div>
                                 </div>
