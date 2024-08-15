@@ -491,8 +491,8 @@ class Products {
                                     <td>'.$product['id_foto'].'</td>
                                     <td>'.$product['fecha_pub_producto'].'</td>
                                     <td>
-                                        <a href = "products.php?action=update_product_form&&id_product='.$product['id_producto'].'" class="btn btn-info btn-sm">Editar Usuario</a> 
-                                       <a href = "products.php?action=delete_product_form&&id_product='.$product['id_producto'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a> 
+                                        <a href = "products.php?action=update_product_form&&id_product='.$product['id_producto'].'" class="btn btn-info btn-sm">Editar producto</a> 
+                                       <a href = "products.php?action=delete_product_form&&id_product='.$product['id_producto'].'" class="btn btn-danger btn-sm">Eliminar producto</a> 
                                     </td>
                                 </tr>'; 
                             }
