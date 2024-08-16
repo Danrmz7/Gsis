@@ -48,6 +48,15 @@ class Products {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
+                else
+                {
+                    $alert = '
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> Producto NO Agregado
+                    </div> ';
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+                }
             break;
 
             case 'update_product':
@@ -185,17 +194,60 @@ class Products {
         }
     }
 
-    public function insert_products()
+    //  Descartado hasta que podamos subir archivos con código
+    /*public function insert_products()
     {
-        $query = "INSERT INTO productos (nombre_producto,id_categoria,descripcion_producto,precio_producto,id_usuario) VALUES (?,?,?,?,?)";
+        $query = "INSERT INTO productos (nombre_producto,id_categoria,descripcion_producto,precio_producto,id_usuario,foto_producto) VALUES (?,?,?,?,?,?)";
         $params_query = array(
             $this->postData['nuevoProducto'],
             $this->postData['nuevoCategoria'],
             $this->postData['nuevoDescripcion'],
             $this->postData['nuevoPrecio'],
-            $this->postData['nuevoPerfil']
-            
+            $this->postData['nuevoPerfil'],
+            $_FILES["foto_producto"]["name"]
+        );
 
+        $target_dir = "_assets/img/productos/"; //directorio en el que se subira
+        $target_file = $target_dir . basename($_FILES["foto_producto"]["name"]);//se añade el directorio y el nombre del archivo
+        $uploadOk = 1;//se añade un valor determinado en 1
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif")
+        {
+            if (move_uploaded_file($_FILES["foto_producto"]["tmp_name"], $target_file))
+            {
+                if($this->sql->insert($query, $params_query))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        
+        
+    }*/
+
+    public function insert_products()
+    {
+        $query = "INSERT INTO productos (nombre_producto,id_categoria,descripcion_producto,precio_producto,id_usuario,foto_producto) VALUES (?,?,?,?,?,?)";
+        $params_query = array(
+            $this->postData['nuevoProducto'],
+            $this->postData['nuevoCategoria'],
+            $this->postData['nuevoDescripcion'],
+            $this->postData['nuevoPrecio'],
+            $this->postData['nuevoPerfil'],
+            $this->postData['foto_producto']
         );
 
         if($this->sql->insert($query, $params_query))
@@ -205,7 +257,8 @@ class Products {
         else
         {
             return false;
-        }
+        }        
+        
     }
 
     public function update_products()
@@ -377,6 +430,8 @@ class Products {
                                     </div>
                                 </div>
 
+                                <input type="file" id="foto_producto" name="foto_producto"><br>
+
                                 <!-- Entrada para la categoria -->
                                 <div class="form-group">
                                     <div class="input-group">
@@ -432,20 +487,6 @@ class Products {
                                         <input type="text" class="form-control input-lg" name="nuevofoto" placeholder="foto" required>
                                     </div>
                                 </div>
-
-
-                                <!-- Entrada para seleccionar perfil 
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <select class="form-control input-lg" name="nuevoPerfil">
-                                            <option value="">Seleccionar perfil</option>
-                                            <option value="Administrador">Administrador</option>
-                                            <option value="Especial">Especial</option>
-                                            <option value="Vendedor">Vendedor</option>
-                                        </select>
-                                    </div>
-                                </div> -->
-                                <!-- Botón de enviar -->
                                     <div class="form-group">
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary">Enviar</button>
