@@ -9,7 +9,7 @@ $process = $Productos->process();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinective Admin | Dashboard</title>
+    <title> Admin | Dashboard</title>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">

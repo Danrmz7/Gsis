@@ -201,7 +201,7 @@ class Usuarios {
                     <input value="'.$this->getData['id_user'].'" type="hidden" name="id_user" >
                     <div class="form-group">
                         <div class="input-group">
-                            <button type="submit" class="btn btn-warning">Simon</button>
+                            <button type="submit" class="btn btn-warning">Aceptar</button>
                             <a href="javascript:history.back()" class="btn btn-primary">No, Volver</a>
                         </div>
                     </div>   
@@ -231,7 +231,7 @@ class Usuarios {
                                 <div class="form-group">
                                     <div class="input-group">
                                     Correo:<br><br>
-                                        <input value="'.$user['correo_usuario'].'" type="text" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
+                                        <input value="'.$user['correo_usuario'].'" type="email" class="form-control input-lg" name="putUsuario" placeholder="Actualizar usuario" required>
                                     </div>
                                 </div>
 
@@ -295,10 +295,10 @@ class Usuarios {
                                     </div>
                                 </div>
 
-                                <!-- Entrada para el usuario -->
+                                <!-- Entrada para el correo -->
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar usuario" required>
+                                        <input type="email" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar correo" required>
                                     </div>
                                 </div>
 

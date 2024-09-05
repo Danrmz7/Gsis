@@ -316,7 +316,7 @@ class Products {
                    <input value="'.$this->getData['id_product'].'" type="hidden" name="id_product" >
                    <div class="form-group">
                        <div class="input-group">
-                           <button type="submit" class="btn btn-warning">Simon</button>
+                           <button type="submit" class="btn btn-warning">Aceptar</button>
                            <a href="javascript:history.back()" class="btn btn-primary">No, Volver</a>
                        </div>
                    </div>   

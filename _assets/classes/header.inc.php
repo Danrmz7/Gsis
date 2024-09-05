@@ -24,6 +24,8 @@ header("Cache-control: private");
     // require('phpCommon/SecureV2.class.php');
     require('usuarios.class.php');
     require('products.class.php');
+    require('vendedores.class.php');
+
 
     $MySqlHandler =  MySqlPdoHandler::getInstance(); 
     $MySqlHandler->connect($database_name);
@@ -32,6 +34,7 @@ header("Cache-control: private");
     // $secure     = new Secure($MySqlHandler, $database_name, $table_users, $unField, $psField, $idField, 'remember_me' , '', 'pos_secure', 'login.php', true);
     $Usuarios      = new Usuarios($MySqlHandler/*, $secure->getCurrentUser()*/);
     $Productos      = new Products($MySqlHandler/*, $secure->getCurrentUser()*/);
+    //$vendedores      = new vendors($MySqlHandler/*, $secure->getCurrentUser()*/);
 
 
     /*if($get_user = $secure->getCurrentUser()){

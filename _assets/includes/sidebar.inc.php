@@ -48,10 +48,27 @@
         <span>Mis Productos</span></a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="products.php/?action=add_product_form">
+    <a class="nav-link" href="products.php?action=save_product_form">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Agregar Producto</span></a>
 </li>
+
+<div class="sidebar-heading">
+    Usuarios
+</div>
+
+<li class="nav-item">
+    <a class="nav-link" href="./">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Mis compradores</span></a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="vendors.php">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Mis vendedores</span></a>
+</li>
+
 
 <!-- Nav Item - Utilities Collapse Menu 
 <li class="nav-item">
