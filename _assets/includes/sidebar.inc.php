@@ -60,13 +60,13 @@
 <li class="nav-item">
     <a class="nav-link" href="./">
         <i class="fas fa-fw fa-chart-area"></i>
-        <span>Mis compradores</span></a>
+        <span>Mis vendedores</span></a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="vendors.php">
+    <a class="nav-link" href="buyers.php">
         <i class="fas fa-fw fa-chart-area"></i>
-        <span>Mis vendedores</span></a>
+        <span>Mis compradores</span></a>
 </li>
 
 
