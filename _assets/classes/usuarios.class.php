@@ -282,7 +282,7 @@ class Usuarios {
             {
                 $output .= '
                 <div class="card-body">
-                comentario
+              
                 <div class="container">  
                     <div class="row">
                         <div class="col">
@@ -343,7 +343,7 @@ class Usuarios {
         {
             $output .= '
             '.$alert.'
-            <a href = "./?action=save_user_form" class="btn btn-primary">Agregar Nuevo Usuario</a>
+            <a href = "./?action=save_user_form" class="btn btn-primary">Agregar Nuevo Vendedor</a>
             <div class="container">
                 <div class="table-responsive">
                     <table class = "table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -366,8 +366,8 @@ class Usuarios {
                                 <td>'.$user['contrasena_usuario'].'</td>
                                 <td>'.$user['edad_usuario'].'</td>
                                 <td>
-                                    <a href = "./?action=update_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-info btn-sm">Editar Usuario</a>
-                                    <a href = "./?action=delete_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-danger btn-sm">Eliminar Usuario</a>
+                                    <a href = "./?action=update_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-info btn-sm">Editar vendedores</a>
+                                    <a href = "./?action=delete_user_form&&id_user='.$user['id_usuario'].'" class="btn btn-danger btn-sm">Eliminar vendedores</a>
                                 </td>
                             </tr>';
                         }

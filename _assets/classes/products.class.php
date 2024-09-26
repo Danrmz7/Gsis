@@ -514,7 +514,7 @@ class Products {
                                     <th>Usuario</th>
                                     <th>Foto</th>
                                     <th>Fecha de publicacion</th>
-                                    <th>kk</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>';
