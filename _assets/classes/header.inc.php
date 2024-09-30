@@ -13,9 +13,9 @@ header("Cache-control: private");
 
     // secure class data
     $table_users   = "usuarios";
-    $idField       = 'ID';
-    $unField       = 'CORREO';
-    $psField       = 'CONTRASENA';
+    $idField       = 'id_usuario';
+    $unField       = 'correo_usuario';
+    $psField       = 'contrasena_usuario';
 
     require('phpCommon/BlockXSS.class.php');
     require('phpCommon/MySqlPdoHandler.class.php');
