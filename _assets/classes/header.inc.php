@@ -25,6 +25,7 @@ header("Cache-control: private");
     require('usuarios.class.php');
     require('products.class.php');
     require('compradores.class.php');
+    require('venders.class.php');
 
 
     $MySqlHandler =  MySqlPdoHandler::getInstance(); 
@@ -35,6 +36,7 @@ header("Cache-control: private");
     $Usuarios      = new Usuarios($MySqlHandler/*, $secure->getCurrentUser()*/);
     $Productos      = new Products($MySqlHandler/*, $secure->getCurrentUser()*/);
     $compradores      = new compradores($MySqlHandler/*, $secure->getCurrentUser()*/);
+    $venders      = new Usuarios($MySqlHandler/*, $secure->getCurrentUser()*/);
 
 
     /*if($get_user = $secure->getCurrentUser()){
