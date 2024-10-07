@@ -29,8 +29,8 @@
     </form>
     <form class="login-form" method="post" role="form" action="./">
         <img src="_assets/img/logo.png" width="50">
-        <input type="text" name="correo_comprador" placeholder="username"/>
-        <input type="password" name="contrasena_comprador" placeholder="password"/>
+        <input type="text" name="correo_usuario" placeholder="username"/>
+        <input type="password" name="contrasena_usuario" placeholder="password"/>
         <button>login</button>
         <label for="remember-me"> Remember Me</label>
         <p style="color:darkred;"><?php echo ($_GET['error']?$_GET['error']:''); ?></p>

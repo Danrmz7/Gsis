@@ -99,6 +99,11 @@
     </li>
 
     <!-- Nav Item - Messages -->
+    <li class="nav-item no-arrow">
+        <a href="./?logout=1">
+            Log Out
+        </a>
+    </li>
     <li class="nav-item dropdown no-arrow mx-1">
         <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

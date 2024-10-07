@@ -21,25 +21,36 @@ header("Cache-control: private");
     require('phpCommon/MySqlPdoHandler.class.php');
     require('phpCommon/addStripSlashes.php');
 
-    // require('phpCommon/SecureV2.class.php');
+    require('phpCommon/SecureV2.class.php');
     require('usuarios.class.php');
     require('products.class.php');
     require('compradores.class.php');
-    
+    require('sales.class.php');
+    require('class.Cart.php');
 
 
     $MySqlHandler =  MySqlPdoHandler::getInstance(); 
     $MySqlHandler->connect($database_name);
     $MySqlHandler->Query("SET NAMES utf8");
 
-    // $secure     = new Secure($MySqlHandler, $database_name, $table_users, $unField, $psField, $idField, 'remember_me' , '', 'pos_secure', 'login.php', true);
-    $Usuarios      = new Usuarios($MySqlHandler/*, $secure->getCurrentUser()*/);
-    $Productos      = new Products($MySqlHandler/*, $secure->getCurrentUser()*/);
-    $compradores      = new compradores($MySqlHandler/*, $secure->getCurrentUser()*/);
+    $cart             = new Cart([
+        // Can add unlimited number of item to cart
+        'cartMaxItem'      => 0,
+        
+        // Set maximum quantity allowed per item to 99
+        'itemMaxQuantity'  => 99,
+        
+        // Do not use cookie, cart data will lost when browser is closed
+        'useCookie'        => false,
+    ]);
+    $secure            = new Secure($MySqlHandler, $database_name, $table_users, $unField, $psField, $idField, 'remember_me' , '', 'pos_secure', 'login.php', true);
+    $Usuarios          = new Usuarios($MySqlHandler, $secure->getCurrentUser());
+    $Productos         = new Products($MySqlHandler, $secure->getCurrentUser());
+    $compradores       = new compradores($MySqlHandler, $secure->getCurrentUser());
+    $Sales             = new Sales($MySqlHandler, $secure->getCurrentUser(),  $cart);
    
 
-
-    /*if($get_user = $secure->getCurrentUser()){
+    if($get_user = $secure->getCurrentUser()){
 
         if($get_user['active']==1){
     
@@ -47,7 +58,7 @@ header("Cache-control: private");
             header('Location: ./?logout=1');
             die();
         }
-    }*/
+    }
     
 
 ?>

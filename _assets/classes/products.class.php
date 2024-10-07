@@ -309,7 +309,8 @@ class Products {
 
     public function show_all_rows($alert='')
     {   
-        if ($this->action == "delete_product_form"){
+        if ($this->action == "delete_product_form")
+        {
             $output .= '
            <form action="products.php?action=delete_product" method="POST">
                <h1>¿Estás Seguro Que Desea Eliminar a este usuario?</h1>
