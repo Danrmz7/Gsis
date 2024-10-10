@@ -64,6 +64,9 @@ $process = $Sales->process();
     
 
     <!-- plugins:js -->
+    <script src="_assets/vendor/jquery/jquery.min.js"></script>
+    <script src="_assets/vendor/jquery/jquery.js"></script>
+    
     <script src="_assets/vendors/js/vendor.bundle.base.js"></script>
     <script src="_assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <!-- endinject -->

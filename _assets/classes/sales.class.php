@@ -34,6 +34,7 @@ class Sales {
       $this->getData     = BlockXSS::sanitizes($_GET);
       $this->requestData = BlockXSS::sanitizes($_REQUEST);
       $this->action      = $this->getData['action'];  
+      $this->view        = $this->getData['view'];
   
     }
 
@@ -105,6 +106,29 @@ class Sales {
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
+            break;
+
+            case 'confirm_sale':
+                if ($this->save_sale())
+                {
+                    $this->cart->destroy();
+                    $alert = '
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> Venta Realizada
+                    </div> ';
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+                }
+                else
+                {
+                    $alert = '
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> Venta NO Realizada
+                    </div> ';
+                    $output .= $this->show_all_rows($alert);
+                    return $output;
+                }
+                
             break;
 
             default:
@@ -195,6 +219,140 @@ class Sales {
         
     }
 
+    public function get_rewards()
+    {
+        $allItems = $this->cart->getItems();
+
+        foreach ($allItems as $items)
+        {
+            foreach ($items as $item)
+            {
+                $query = "SELECT * from productos where id_producto = ?";
+                $params_query = array($item['id']);
+
+                if ($rs = $this->sql->select($query, $params_query))
+                {
+                    $length = count($rs);
+                    for($i=0; $i <= $length; $i++)
+                    {
+                        $productos_comprados = $rs[$i];
+                        $recompensas = $productos_comprados['dino_producto'] * $item['quantity'];
+                        $total_rew += $recompensas;
+                    }
+                }
+                else
+                {
+                    $recompensas = 0;
+                }
+            }
+        }
+        return $total_rew;
+    }
+
+    public function get_buyers()
+    {
+        $query = "SELECT * from compradores";
+        //$params_query = array($this->_user['id_usuario']);
+
+        if($rs = $this->sql->select($query, $params_query))
+        {
+            return $rs;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function save_sale()
+    {
+        $fecha_actual = date("Y-m-d");
+        $query = "INSERT INTO ventas (id_comprador,fecha_compra) VALUES (?,?)";
+        $params_query = array($this->_user['id_usuario'],$fecha_actual);
+
+        if($this->sql->insert($query, $params_query))
+        {
+            $query = "SELECT id_venta from ventas where id_comprador = ? order by id_venta DESC Limit 1;";
+            $params_query = array($this->postData['comprador']);
+
+            if ($rs = $this->sql->select($query, $params_query))
+            {
+                $allItems = $this->cart->getItems();
+                $ultima_venta = $rs[0];
+                foreach ($allItems as $items)
+                {
+                    foreach ($items as $item)
+                    {
+                        $query = "INSERT INTO carrito_productos (id_carrito, id_producto) VALUES (?,?)";
+                        $params_query = array($ultima_venta['id_venta'], $item['id']);
+                        $this->sql->insert($query, $params_query);
+                    }
+                }
+
+                $recompensas = $this->get_rewards();
+                if ($this->update_buyer_money($this->postData['comprador'])){
+
+                }
+
+                if ($this->add_rewards($recompensas, $this->postData['comprador'])){
+                
+                }
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function update_buyer_money($id_comprador)
+    {
+        $query = "SELECT * from compradores where id_comprador = ?;";
+        $params_query = array($id_comprador);
+        
+        if ($rs = $this->sql->select($query, $params_query))
+        {
+            $comprador = $rs[0];
+            $dinero_comprador = $comprador['dino_coins'];
+            $total_compra = $this->cart->getAttributeTotal('price');
+            $total_dinero_comprador = $dinero_comprador - $total_compra;
+
+            $query = "UPDATE compradores SET dino_coins = ? WHERE id_comprador = ?; ";
+            $params_query = array( $total_dinero_comprador, $id_comprador);    
+
+            if($article = $this->sql->update($query, $params_query) )
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function add_rewards($recompensas, $id_comprador)
+    {
+        $query = "SELECT * FROM compradores where id_comprador = ?";
+        $params_query = array( $id_comprador );   
+        
+        if ($rs = $this->sql->select($query, $params_query))
+        {
+            $dinero_usuario = $rs[0];
+            $dinero_acumulado = $dinero_usuario['dino_coins'] + $recompensas;
+
+            $query = "UPDATE `compradores` SET dino_coins = ? WHERE id_comprador = ?; ";
+            $params_query = array( $dinero_acumulado, $id_comprador );   
+            
+            if($article = $this->sql->update($query, $params_query) ) {
+                return true;
+                }else{
+                return false; 
+            }
+        }
+    }
+
     /** 
     * @param action
     * @return null
@@ -202,12 +360,62 @@ class Sales {
 
     public function show_all_rows($alert='')
     {
-        /*if ($this->action)
+        if ($this->view == "confirm_form")
         {
-            $output .= 'asdasdasd';
+            $allItems = $this->cart->getItems();
+            $output .= '
+            <form action="sales.php?action=confirm_sale" method="post" class="container row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body row">
+
+                            <h2>Confirmar Compra</h2>
+                            <hr>
+
+                            <div class="col-md-6">
+                                <strong>Productos seleccionados</strong>
+                                <ul class="list-group list-group-flush mt-3">';
+                                foreach ($allItems as $items)
+                                {
+                                    foreach ($items as $item)
+                                    {
+                                        $currnt_prd = $this->get_product_info($item['id']);
+                                        $output .= '
+                                            <li class="list-group-item"><strong>#'.$item['id'].'</strong> - '.ucfirst($currnt_prd['nombre_producto']).'</li>
+                                        ';
+                                    }
+                                }
+                                $output .= '
+                                </ul>
+                            </div>
+
+                            <div class="col-md-6" style="padding:2%;">
+                                <strong>Total Compra:</strong> $'.number_format($this->cart->getAttributeTotal('price'), 2, '.', ',').'<br>
+                                <strong>Recompensas:</strong> $'.number_format($this->get_rewards(), 2 , '.', ',').'<br>
+                                <strong>Comprador:</strong>
+                                <select name="comprador" class="form-control form-control-sm mt-1">
+                                    <option value="0">Comprador</option>';
+                                    foreach($this->get_buyers() as $buyer)
+                                    {
+                                        $output .= '<option value="'.$buyer['id_comprador'].'">'.$buyer['nombre_comprador'].'</option>';
+                                    }
+                                
+                                $output .= '
+                                </select>
+                                <br>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Pagar $'.number_format($this->cart->getAttributeTotal('price'), 2, '.', ',').'
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            ';
         }
         else
-        {*/
+        {
             $output .= '
             <div class="container row">
                 <div class="col-md-6">
@@ -318,15 +526,15 @@ class Sales {
                             
                             
                             $output .= '
-                            <buttton class="btn btn-success">
+                            <a href="sales.php?view=confirm_form" class="btn btn-success '; if($this->cart->getAttributeTotal('price') <= 0.0){ $output .= 'btn disabled'; } $output .= '">
                                 Pagar $'.number_format($this->cart->getAttributeTotal('price'), 2, '.', ',').'
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
             ';
-        /*}*/
+        }
         return $output;        
     }
 
