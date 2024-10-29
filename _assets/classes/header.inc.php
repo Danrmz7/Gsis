@@ -26,6 +26,7 @@ header("Cache-control: private");
     require('products.class.php');
     require('compradores.class.php');
     require('sales.class.php');
+    require('money.class.php');
     require('class.Cart.php');
 
 
@@ -48,6 +49,7 @@ header("Cache-control: private");
     $Productos         = new Products($MySqlHandler, $secure->getCurrentUser());
     $compradores       = new compradores($MySqlHandler, $secure->getCurrentUser());
     $Sales             = new Sales($MySqlHandler, $secure->getCurrentUser(),  $cart);
+    $Money             = new Money($MySqlHandler, $secure->getCurrentUser());
    
 
     if($get_user = $secure->getCurrentUser()){
