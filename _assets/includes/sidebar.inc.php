@@ -12,6 +12,10 @@
 <!-- Divider -->
 <hr class="sidebar-divider my-0">
 
+<div class="navbar bg-body-tertiary">
+    <a class="nav-link" href="#"><img src="_assets/img/coin.png" width="30"> <?php print $get_user['dino_coins']; ?></a>
+    </div>
+
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
     <a class="nav-link" href="index.php">
