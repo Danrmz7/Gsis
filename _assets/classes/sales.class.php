@@ -113,8 +113,9 @@ class Sales {
                 {
                     $this->cart->destroy();
                     $alert = '
-                    <div class="alert alert-success">
+                    <div class="alert alert-success alert-dismissible fade show">
                         <strong>Success!</strong> Venta Realizada
+                        <a href="./"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></a>
                     </div> ';
                     $output .= $this->show_all_rows($alert);
                     return $output;
@@ -122,8 +123,9 @@ class Sales {
                 else
                 {
                     $alert = '
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger alert-dismissible fade show">
                         <strong>Error!</strong> Venta NO Realizada
+                        <a href="./"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></a>
                     </div> ';
                     $output .= $this->show_all_rows($alert);
                     return $output;
@@ -290,9 +292,13 @@ class Sales {
                 }
 
                 $recompensas = $this->get_rewards();
-                if ($this->update_buyer_money($this->postData['comprador'])){
+                if ($this->update_buyer_money($this->postData['comprador']) && $this->update_seller_money()){
 
                 }
+
+                /*if ($this->update_seller_money()){
+
+                }*/
 
                 if ($this->add_rewards($recompensas, $this->postData['comprador'])){
                 
@@ -320,6 +326,31 @@ class Sales {
 
             $query = "UPDATE compradores SET dino_coins = ? WHERE id_comprador = ?; ";
             $params_query = array( $total_dinero_comprador, $id_comprador);    
+
+            if($article = $this->sql->update($query, $params_query) )
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function update_seller_money()
+    {
+        $query = "SELECT * from usuarios where id_usuario = ?;";
+        $params_query = array($this->_user['id_usuario']);
+        
+        if ($rs = $this->sql->select($query, $params_query))
+        {
+            $seller = $rs[0];
+            $total_compra = $this->cart->getAttributeTotal('price');
+            $total_dinero_vendedor = $seller['dino_coins'] + $total_compra;
+
+            $query = "UPDATE usuarios SET dino_coins = ? WHERE id_usuario = ?; ";
+            $params_query = array( $total_dinero_vendedor, $this->_user['id_usuario']);    
 
             if($article = $this->sql->update($query, $params_query) )
             {
