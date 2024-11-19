@@ -85,6 +85,34 @@ $process = $Sales->process();
     <script src="_assets/js/jquery.cookie.js" type="text/javascript"></script>
     <script src="_assets/js/dashboard.js"></script>
     <!-- <script src="_assets/js/Chart.roundedBarCharts.js"></script> -->
+
+    <script>
+    function fetchBuyerDetails(compradorId) {
+        if (compradorId == 0) {
+            document.getElementById("buyer-details").innerHTML = `<p><strong>Nombre: </strong><small class="text-muted">vacío</small><br>
+            <strong>Correo: </strong><small class="text-muted">vacío</small></p>`;
+            return;
+        }
+
+        // Realizamos la solicitud AJAX
+        fetch(`sales.php?action=get_buyer_details&id_comprador=${compradorId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("buyer-details").innerHTML = `
+                        <p><strong>Nombre:</strong> ${data.buyer.nombre_comprador}<br>
+                        <strong>Correo:</strong> ${data.buyer.correo_comprador}</p>
+                    `;
+                } else {
+                    document.getElementById("buyer-details").innerHTML = "Error al obtener los datos del comprador." + data.buyer;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("buyer-details").innerHTML = "Hubo un problema con la solicitud.";
+            });
+    }
+    </script>
     <!-- End custom js for this page-->
 </body>
 </html>

@@ -12,6 +12,10 @@
 <!-- Divider -->
 <hr class="sidebar-divider my-0">
 
+<div class="sidebar-heading">
+    Movimientos
+</div>
+
 <div class="navbar bg-body-tertiary">
     <a class="nav-link" href="#"><img src="_assets/img/coin.png" width="30"> <?php print $get_user['dino_coins']; ?></a>
     </div>
@@ -22,8 +26,10 @@
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span></a>
 </li>
+<!-- Divider -->
+<hr class="sidebar-divider">
 
-<li class="nav-item active">
+<li class="nav-item">
     <a class="nav-link" href="sales.php">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Vender</span></a>
@@ -52,6 +58,11 @@
         <span>Agregar Producto</span></a>
 </li>
 
+<?php
+if ($get_user['is_admin']==1)
+{
+?>
+
 <div class="sidebar-heading">
     Usuarios
 </div>
@@ -68,7 +79,9 @@
         <span>Mis compradores</span></a>
 </li>
 
-
+<?php
+}
+?>
 <!-- Nav Item - Utilities Collapse Menu 
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"

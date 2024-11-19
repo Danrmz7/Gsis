@@ -115,7 +115,7 @@ class Sales {
                     $alert = '
                     <div class="alert alert-success alert-dismissible fade show">
                         <strong>Success!</strong> Venta Realizada
-                        <a href="./"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></a>
+                        <a href="sales.php"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></a>
                     </div> ';
                     $output .= $this->show_all_rows($alert);
                     return $output;
@@ -125,13 +125,28 @@ class Sales {
                     $alert = '
                     <div class="alert alert-danger alert-dismissible fade show">
                         <strong>Error!</strong> Venta NO Realizada
-                        <a href="./"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></a>
+                        <a href="sales.php"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></a>
                     </div> ';
                     $output .= $this->show_all_rows($alert);
                     return $output;
                 }
                 
             break;
+
+            case 'get_buyer_details':
+                $id_comprador = intval($this->getData['id_comprador'] ?? 0);
+                $query = "SELECT * FROM compradores WHERE id_comprador = ?";
+                $params_query = [$id_comprador];
+        
+                if ($buyer = $this->sql->select($query, $params_query)) {
+                    echo json_encode([
+                        'success' => true,
+                        'buyer' => $buyer[0]
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Comprador no encontrado.']);
+                }
+            exit;
 
             default:
                 $output .= $this->show_all_rows($alert);
@@ -403,7 +418,7 @@ class Sales {
                             <h2>Confirmar Compra</h2>
                             <hr>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <strong>Productos seleccionados</strong>
                                 <ul class="list-group list-group-flush mt-3">';
                                 foreach ($allItems as $items)
@@ -420,15 +435,15 @@ class Sales {
                                 </ul>
                             </div>
 
-                            <div class="col-md-6" style="padding:2%;">
+                            <div class="col-md-4">
                                 <strong>Total Compra:</strong> $'.number_format($this->cart->getAttributeTotal('price'), 2, '.', ',').'<br>
                                 <strong>Recompensas:</strong> $'.number_format($this->get_rewards(), 2 , '.', ',').'<br>
                                 <strong>Comprador:</strong>
-                                <select name="comprador" class="form-control form-control-sm mt-1">
+                                <select name="comprador" class="form-control form-control-sm mt-1" onchange="fetchBuyerDetails(this.value)">
                                     <option value="0">Comprador</option>';
                                     foreach($this->get_buyers() as $buyer)
                                     {
-                                        $output .= '<option value="'.$buyer['id_comprador'].'">'.$buyer['nombre_comprador'].'</option>';
+                                        $output .= '<option value="'.$buyer['id_comprador'].'">'.$buyer['id_comprador'].' - '.$buyer['nombre_comprador'].'</option>';
                                     }
                                 
                                 $output .= '
@@ -437,6 +452,13 @@ class Sales {
                                 <button type="submit" class="btn btn-primary btn-block">
                                     Pagar $'.number_format($this->cart->getAttributeTotal('price'), 2, '.', ',').'
                                 </button>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div id="buyer-details" class="mt-3">
+                                    <p><strong>Nombre: </strong><small class="text-muted">vacío</small><br>
+                                    <strong>Correo: </strong><small class="text-muted">vacío</small></p>
+                                </div>
                             </div>
 
                         </div>
